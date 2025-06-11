@@ -6,10 +6,10 @@ import pandas as pd
 from tqdm import tqdm
 
 # --- Configuration ---
-NUM_RUNS = 10
+NUM_RUNS = 1
 DATASET = 'ml-100k'
 NUM_FACTORS = '16'
-EPOCHS = '20'
+EPOCHS = '2'
 
 # --- CONFIGURATION ---
 CONFIGS = [
@@ -54,6 +54,16 @@ def parse_saved_filename(output_string):
     if match: return match.group(1)
     print("---! WARNING: Could not parse saved filename from output. !---")
     return None
+def parse_metrics(output_string):
+    """Parses HR and NDCG from the final output line."""
+    if output_string is None:
+        return None, None
+    match = re.search(r"End\. Best Iteration \d+:.*?HR\s*=\s*(\d+\.\d+),\s*NDCG\s*=\s*(\d+\.\d+)", output_string)
+    if match:
+        return float(match.group(1)), float(match.group(2))
+    print("---! WARNING: Could not parse metrics from output. !---")
+    return None, None
+
 
 def main():
     """Main function to run the entire experiment."""
@@ -72,11 +82,20 @@ def main():
                 '--epochs', EPOCHS, '--out', '0'
             ]
             output = run_command(cmd)
-            hr = parse_hr(output)
-            if hr:
-                results[f"{config['name']} (No Pre-train)"].append(hr)
+            #hr = parse_hr(output)
+            # if hr:
+            #     results[f"{config['name']} (No Pre-train)"].append(hr)
+            hr, ndcg= parse_metrics(output)
+            if hr is not None:
+                results[f"{config['name']} (No Pre-train)"].append({
+                    "Run": i,
+                    "HR@10": hr,
+                    "NDCG@10": ndcg,
+                })
 
-        # --- Phase 2: NeuMF WITH Pre-training ---
+
+
+        # # --- Phase 2: NeuMF WITH Pre-training ---
         print(f"\n--- Phase 2: Running models WITH pre-training (Run {i}) ---")
         gmf_cmd = [
             'python', 'GMF.py', '--dataset', DATASET, '--num_factors', NUM_FACTORS,
@@ -106,10 +125,18 @@ def main():
                 '--mf_pretrain', gmf_model_file, '--mlp_pretrain', mlp_model_file
             ]
             neumf_output = run_command(neumf_cmd)
-            hr = parse_hr(neumf_output)
-            if hr:
-                results[f"{config['name']} (With Pre-train)"].append(hr)
-    
+            #hr = parse_hr(neumf_output)
+            # if hr:
+            #     results[f"{config['name']} (With Pre-train)"].append(hr)
+            hr, ndcg = parse_metrics(neumf_output)
+            if hr is not None:
+                results[f"{config['name']} (No Pre-train)"].append({
+                    "Run": i,
+                    "HR@10": hr,
+                    "NDCG@10": ndcg,
+                })
+
+
     # ================== MODIFIED SUMMARY BLOCK STARTS HERE ==================
     print(f"\n{'='*20} EXPERIMENT COMPLETE - FINAL MEAN & STD VALUES {'='*20}")
     
@@ -117,35 +144,39 @@ def main():
     for config in CONFIGS:
         no_pretrain_key = f"{config['name']} (No Pre-train)"
         with_pretrain_key = f"{config['name']} (With Pre-train)"
-        
-        # --- Calculate Mean and Std for "Without Pre-training" ---
+
         hr_list_no_pretrain = results.get(no_pretrain_key, [])
         if hr_list_no_pretrain:
-            mean_no_pretrain = np.mean(hr_list_no_pretrain)
-            std_no_pretrain = np.std(hr_list_no_pretrain)
+            hr_values_no_pretrain = [entry["HR@10"] for entry in hr_list_no_pretrain]
+            mean_no_pretrain = np.mean(hr_values_no_pretrain)
+            std_no_pretrain = np.std(hr_values_no_pretrain)
             no_pretrain_str = f"{mean_no_pretrain:.4f} ± {std_no_pretrain:.4f}"
         else:
             no_pretrain_str = "N/A"
 
-        # --- Calculate Mean and Std for "With Pre-training" ---
         hr_list_with_pretrain = results.get(with_pretrain_key, [])
         if hr_list_with_pretrain:
-            mean_with_pretrain = np.mean(hr_list_with_pretrain)
-            std_with_pretrain = np.std(hr_list_with_pretrain)
+            hr_values_with_pretrain = [entry["HR@10"] for entry in hr_list_with_pretrain]
+            mean_with_pretrain = np.mean(hr_values_with_pretrain)
+            std_with_pretrain = np.std(hr_values_with_pretrain)
             with_pretrain_str = f"{mean_with_pretrain:.4f} ± {std_with_pretrain:.4f}"
         else:
             with_pretrain_str = "N/A"
 
-        # --- Append formatted results to summary data ---
         summary_data.append({
             "Number of MLP Layers": config['name'],
             "HR@10 (Without Pre-training)": no_pretrain_str,
             "HR@10 (With Pre-training)": with_pretrain_str
         })
 
+
     df_summary = pd.DataFrame(summary_data)
     print("\nFinal Results (Mean ± Standard Deviation over 10 runs):\n")
     print(df_summary.to_string(index=False))
+    df_all = pd.DataFrame(results)
+    df_all.to_csv("raw_results.csv", index=False)
+    print("\n✅ All raw results saved to 'raw_results.csv'")
+
     # =================== MODIFIED SUMMARY BLOCK ENDS HERE ===================
 
 
