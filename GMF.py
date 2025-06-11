@@ -99,7 +99,7 @@ if __name__ == '__main__':
     topK = 10
     evaluation_threads = 1 #mp.cpu_count()
     print("GMF arguments: %s" %(args))
-    model_out_file = 'Pretrain/%s_GMF_%d_%d.h5' %(args.dataset, num_factors, time())
+    model_out_file = 'Pretrain/%s_GMF_%d_%d.npy' %(args.dataset, num_factors, time())
     
     # Loading data
     t1 = time()
@@ -148,7 +148,9 @@ if __name__ == '__main__':
             if hr > best_hr:
                 best_hr, best_ndcg, best_iter = hr, ndcg, epoch
                 if args.out > 0:
-                    model.save_weights(model_out_file, overwrite=True)
+                    # model.save_weights(model_out_file, overwrite=True)
+                        np.save(model_out_file, model.get_weights())
+
 
     print("End. Best Iteration %d:  HR = %.4f, NDCG = %.4f. " %(best_iter, best_hr, best_ndcg))
     if args.out > 0:

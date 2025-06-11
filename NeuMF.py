@@ -23,6 +23,8 @@ from evaluate import evaluate_model
 from Dataset import Dataset
 from time import time
 import argparse
+import GMF
+import MLP
 
 #################### Arguments ####################
 def parse_args():
@@ -109,7 +111,7 @@ def get_model(num_users, num_items, mf_dim=10, layers=[10], reg_layers=[0], reg_
     
     return model
 
-def load_pretrain_model(model, gmf_model, mlp_model, num_layers):
+# def load_pretrain_model(model, gmf_model, mlp_model, num_layers):
     # This function is designed to work with models loaded by keras.models.load_model()
     
     # Load MF embeddings
@@ -138,6 +140,41 @@ def load_pretrain_model(model, gmf_model, mlp_model, num_layers):
     # The NeuMF prediction layer input is [mf_vector, mlp_vector], so the weights must match.
     new_weights = np.concatenate((gmf_prediction[0], mlp_prediction[0]), axis=0)
     # The new bias is an average of the GMF and MLP biases.
+    new_b = (gmf_prediction[1] + mlp_prediction[1]) / 2.0
+    
+    model.get_layer('prediction').set_weights([new_weights, new_b])    
+    return model
+# NEW, CORRECTED load_pretrain_model function
+def load_pretrain_model(model, gmf_weights, mlp_weights, num_layers):
+    # MF embeddings
+    # The GMF model has 2 layers of weights (user, item) and a prediction layer
+    gmf_user_embeddings = [gmf_weights[0]]  # Keras expects a list
+    gmf_item_embeddings = [gmf_weights[1]]
+    model.get_layer('mf_embedding_user').set_weights(gmf_user_embeddings)
+    model.get_layer('mf_embedding_item').set_weights(gmf_item_embeddings)
+    
+    # MLP embeddings
+    # The MLP model has user/item embeddings, N dense layers, and a prediction layer
+    mlp_user_embeddings = [mlp_weights[0]]
+    mlp_item_embeddings = [mlp_weights[1]]
+    model.get_layer('mlp_embedding_user').set_weights(mlp_user_embeddings)
+    model.get_layer('mlp_embedding_item').set_weights(mlp_item_embeddings)
+    
+    # MLP layers
+    # Each dense layer has a weight matrix and a bias vector
+    for i in range(1, num_layers):
+        # Calculate the correct index for the mlp_weights list
+        mlp_layer_weights = [mlp_weights[2*i], mlp_weights[2*i+1]]
+        model.get_layer('layer%d' %i).set_weights(mlp_layer_weights)
+        
+    # Prediction weights
+    # The GMF prediction layer weights are the last two elements of the gmf_weights list
+    gmf_prediction = [gmf_weights[-2], gmf_weights[-1]]
+    # The MLP prediction layer weights are the last two elements of the mlp_weights list
+    mlp_prediction = [mlp_weights[-2], mlp_weights[-1]]
+    
+    # Concatenate the weights for the final NeuMF prediction layer
+    new_weights = np.concatenate((gmf_prediction[0], mlp_prediction[0]), axis=0)
     new_b = (gmf_prediction[1] + mlp_prediction[1]) / 2.0
     
     model.get_layer('prediction').set_weights([new_weights, new_b])    
@@ -202,11 +239,27 @@ if __name__ == '__main__':
         model.compile(optimizer=SGD(lr=learning_rate), loss='binary_crossentropy')
     
     # Load pretrain model
+    # if mf_pretrain != '' and mlp_pretrain != '':
+    #     # CHANGE: Load the entire saved model instead of just weights. This is more robust.
+    #     gmf_model = load_model(mf_pretrain)
+    #     mlp_model = load_model(mlp_pretrain)
+    #     model = load_pretrain_model(model, gmf_model, mlp_model, len(layers))
+    #     print("Load pretrained GMF (%s) and MLP (%s) models done." %(mf_pretrain, mlp_pretrain))
+    # NEW (CORRECTED) CODE
+# FINAL CORRECTED CODE for NeuMF.py pre-training block
+
+    # FINAL, CORRECTED PRE-TRAINING BLOCK FOR NeuMF.py
+
+    # FINAL, CORRECTED PRE-TRAINING BLOCK FOR NeuMF.py
+
+# Load pretrain model
     if mf_pretrain != '' and mlp_pretrain != '':
-        # CHANGE: Load the entire saved model instead of just weights. This is more robust.
-        gmf_model = load_model(mf_pretrain)
-        mlp_model = load_model(mlp_pretrain)
-        model = load_pretrain_model(model, gmf_model, mlp_model, len(layers))
+        # Load the weights from the .npy files
+        gmf_weights = np.load(mf_pretrain, allow_pickle=True)
+        mlp_weights = np.load(mlp_pretrain, allow_pickle=True)
+    
+        # Pass the NumPy weight arrays directly to the loading function
+        model = load_pretrain_model(model, gmf_weights, mlp_weights, len(layers))
         print("Load pretrained GMF (%s) and MLP (%s) models done." %(mf_pretrain, mlp_pretrain))
         
     # Init performance

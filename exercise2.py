@@ -1,4 +1,4 @@
-# run_experiment.py (Updated with user's suggestion)
+# run_experiment.py (Modified to calculate Mean and Standard Deviation)
 import subprocess
 import re
 import numpy as np
@@ -11,8 +11,7 @@ DATASET = 'ml-100k'
 NUM_FACTORS = '16'
 EPOCHS = '20'
 
-# --- UPDATED CONFIGURATION ---
-# Now includes the correct reg_layers argument for each setup
+# --- CONFIGURATION ---
 CONFIGS = [
     {'name': '1 Layer', 'layers_arg': '[16]', 'reg_layers_arg': '[0]'},
     {'name': '2 Layers', 'layers_arg': '[32,16]', 'reg_layers_arg': '[0,0]'},
@@ -20,7 +19,6 @@ CONFIGS = [
 ]
 # --------------------
 
-# --- Replace this function in your automation script ---
 def run_command(command):
     """Runs a command and returns its stdout. Prints command for clarity."""
     print(f"\n> Running: {' '.join(command)}")
@@ -52,7 +50,7 @@ def parse_hr(output_string):
 def parse_saved_filename(output_string):
     """Parses the saved model filename from the script's output."""
     if output_string is None: return None
-    match = re.search(r"The best.*?model is saved to (Pretrain/.*\.h5)", output_string)
+    match = re.search(r"The best.*?model is saved to (Pretrain/.*\.npy)", output_string)
     if match: return match.group(1)
     print("---! WARNING: Could not parse saved filename from output. !---")
     return None
@@ -68,7 +66,6 @@ def main():
         # --- Phase 1: NeuMF WITHOUT Pre-training ---
         print(f"\n--- Phase 1: Running models WITHOUT pre-training (Run {i}) ---")
         for config in tqdm(CONFIGS, desc="Without Pre-train"):
-            # --- UPDATED COMMAND ---
             cmd = [
                 'python', 'NeuMF.py', '--dataset', DATASET, '--num_factors', NUM_FACTORS,
                 '--layers', config['layers_arg'], '--reg_layers', config['reg_layers_arg'],
@@ -92,7 +89,6 @@ def main():
             continue
 
         for config in tqdm(CONFIGS, desc="With Pre-train   "):
-            # --- UPDATED COMMAND ---
             mlp_cmd = [
                 'python', 'MLP.py', '--dataset', DATASET, '--layers', config['layers_arg'],
                 '--reg_layers', config['reg_layers_arg'], '--epochs', EPOCHS, '--out', '1'
@@ -103,7 +99,6 @@ def main():
                 print(f"---! FATAL: Could not get MLP pre-trained model for {config['name']}. Skipping. !---")
                 continue
 
-            # --- UPDATED COMMAND ---
             neumf_cmd = [
                 'python', 'NeuMF.py', '--dataset', DATASET, '--num_factors', NUM_FACTORS,
                 '--layers', config['layers_arg'], '--reg_layers', config['reg_layers_arg'],
@@ -115,25 +110,44 @@ def main():
             if hr:
                 results[f"{config['name']} (With Pre-train)"].append(hr)
     
-    # --- Final Summary ---
-    print(f"\n{'='*20} EXPERIMENT COMPLETE - FINAL MEDIAN VALUES {'='*20}")
+    # ================== MODIFIED SUMMARY BLOCK STARTS HERE ==================
+    print(f"\n{'='*20} EXPERIMENT COMPLETE - FINAL MEAN & STD VALUES {'='*20}")
     
     summary_data = []
     for config in CONFIGS:
         no_pretrain_key = f"{config['name']} (No Pre-train)"
         with_pretrain_key = f"{config['name']} (With Pre-train)"
         
-        median_no_pretrain = np.median(results.get(no_pretrain_key, [0]))
-        median_with_pretrain = np.median(results.get(with_pretrain_key, [0]))
-        
+        # --- Calculate Mean and Std for "Without Pre-training" ---
+        hr_list_no_pretrain = results.get(no_pretrain_key, [])
+        if hr_list_no_pretrain:
+            mean_no_pretrain = np.mean(hr_list_no_pretrain)
+            std_no_pretrain = np.std(hr_list_no_pretrain)
+            no_pretrain_str = f"{mean_no_pretrain:.4f} ± {std_no_pretrain:.4f}"
+        else:
+            no_pretrain_str = "N/A"
+
+        # --- Calculate Mean and Std for "With Pre-training" ---
+        hr_list_with_pretrain = results.get(with_pretrain_key, [])
+        if hr_list_with_pretrain:
+            mean_with_pretrain = np.mean(hr_list_with_pretrain)
+            std_with_pretrain = np.std(hr_list_with_pretrain)
+            with_pretrain_str = f"{mean_with_pretrain:.4f} ± {std_with_pretrain:.4f}"
+        else:
+            with_pretrain_str = "N/A"
+
+        # --- Append formatted results to summary data ---
         summary_data.append({
             "Number of MLP Layers": config['name'],
-            "HR@10 (Without Pre-training)": f"{median_no_pretrain:.4f}",
-            "HR@10 (With Pre-training)": f"{median_with_pretrain:.4f}"
+            "HR@10 (Without Pre-training)": no_pretrain_str,
+            "HR@10 (With Pre-training)": with_pretrain_str
         })
 
     df_summary = pd.DataFrame(summary_data)
+    print("\nFinal Results (Mean ± Standard Deviation over 10 runs):\n")
     print(df_summary.to_string(index=False))
+    # =================== MODIFIED SUMMARY BLOCK ENDS HERE ===================
+
 
 if __name__ == '__main__':
     main()
