@@ -95,14 +95,23 @@ def get_model(num_users, num_items, mf_dim=10, layers=[10], reg_layers=[0], reg_
     mlp_item_latent = Flatten()(mlp_embedding_item(item_input))
     # CHANGE: 'merge' is deprecated. Use 'concatenate'.
     mlp_vector = concatenate([mlp_user_latent, mlp_item_latent])
+    # for idx in range(1, num_layer):
+    #     # CHANGE: 'W_regularizer' is deprecated. Use 'kernel_regularizer'.
+    #     layer = Dense(layers[idx], kernel_regularizer= l2(reg_layers[idx]), activation='relu', name="layer%d" %idx)
+    #     mlp_vector = layer(mlp_vector)
     for idx in range(1, num_layer):
-        # CHANGE: 'W_regularizer' is deprecated. Use 'kernel_regularizer'.
-        layer = Dense(layers[idx], kernel_regularizer= l2(reg_layers[idx]), activation='relu', name="layer%d" %idx)
-        mlp_vector = layer(mlp_vector)
-
+        layer_name = "layer%d" %idx
+        # --- THIS IS THE NEW LOGIC ---
+        # If it's the last MLP layer, give it a specific name for distillation
+        if idx == num_layer - 1:
+            layer_name = "final_mlp_layer"
+        # --- END NEW LOGIC ---
+            
+        layer = Dense(layers[idx], kernel_regularizer= l2(reg_layers[idx]), activation='relu', name=layer_name)
+        mlp_vector = layer(mlp_vector)    
     # --- Concatenate MF and MLP parts ---
     # CHANGE: 'merge' is deprecated. Use 'concatenate'.
-    predict_vector = concatenate([mf_vector, mlp_vector])
+    predict_vector = concatenate([mf_vector, mlp_vector], name='neumf_concat')
     
     # --- Final prediction layer ---
     # CHANGE: 'init' is deprecated. Use 'kernel_initializer'.
@@ -201,6 +210,8 @@ def get_train_instances(train, num_negatives, num_items):
             labels.append(0)
     return user_input, item_input, labels
 
+# In NeuMF.py
+
 if __name__ == '__main__':
     args = parse_args()
     epochs = args.epochs
@@ -219,7 +230,9 @@ if __name__ == '__main__':
     # topK = 10
     evaluation_threads = 1
     print("NeuMF arguments: %s " %(args))
-    model_out_file = 'Pretrain/%s_NeuMF_%d_%s_%d.h5' %(args.dataset, mf_dim, args.layers, time())
+    
+    # --- FILENAME CHANGE: Save as .npy ---
+    model_out_file = 'Pretrain/%s_NeuMF_%d_%s_%d.npy' %(args.dataset, mf_dim, args.layers, time())
 
     # Loading data
     t1 = time()
@@ -231,7 +244,6 @@ if __name__ == '__main__':
     
     # Build model
     model = get_model(num_users, num_items, mf_dim, layers, reg_layers, reg_mf)
-    #model.summary()
     if learner.lower() == "adagrad": 
         model.compile(optimizer=Adagrad(lr=learning_rate), loss='binary_crossentropy')
     elif learner.lower() == "rmsprop":
@@ -241,38 +253,19 @@ if __name__ == '__main__':
     else:
         model.compile(optimizer=SGD(lr=learning_rate), loss='binary_crossentropy')
     
-    # Load pretrain model
-    # if mf_pretrain != '' and mlp_pretrain != '':
-    #     # CHANGE: Load the entire saved model instead of just weights. This is more robust.
-    #     gmf_model = load_model(mf_pretrain)
-    #     mlp_model = load_model(mlp_pretrain)
-    #     model = load_pretrain_model(model, gmf_model, mlp_model, len(layers))
-    #     print("Load pretrained GMF (%s) and MLP (%s) models done." %(mf_pretrain, mlp_pretrain))
-    # NEW (CORRECTED) CODE
-# FINAL CORRECTED CODE for NeuMF.py pre-training block
-
-    # FINAL, CORRECTED PRE-TRAINING BLOCK FOR NeuMF.py
-
-    # FINAL, CORRECTED PRE-TRAINING BLOCK FOR NeuMF.py
-
-# Load pretrain model
+    # Load pretrain model (This part is for GMF/MLP pretraining, not what we're focused on now)
     if mf_pretrain != '' and mlp_pretrain != '':
-        # Load the weights from the .npy files
-        gmf_weights = np.load(mf_pretrain, allow_pickle=True)
-        mlp_weights = np.load(mlp_pretrain, allow_pickle=True)
-    
-        # Pass the NumPy weight arrays directly to the loading function
-        model = load_pretrain_model(model, gmf_weights, mlp_weights, len(layers))
-        print("Load pretrained GMF (%s) and MLP (%s) models done." %(mf_pretrain, mlp_pretrain))
+        # ... (your pre-training logic for NeuMF can stay here) ...
+        print("Pre-training logic would go here if specified.")
         
     # Init performance
     (hits, ndcgs) = evaluate_model(model, testRatings, testNegatives, topK, evaluation_threads)
     hr, ndcg = np.array(hits).mean(), np.array(ndcgs).mean()
     print('Init: HR = %.4f, NDCG = %.4f' % (hr, ndcg))
     best_hr, best_ndcg, best_iter = hr, ndcg, -1
-    if args.out > 0:
-        # CHANGE: save the whole model instead of just weights
-        model.save(model_out_file)
+
+    # --- NO SAVE COMMAND HERE ---
+    # We must NOT save the untrained model.
         
     # Training model
     for epoch in range(epochs):
@@ -281,7 +274,6 @@ if __name__ == '__main__':
         user_input, item_input, labels = get_train_instances(train, num_negatives, num_items)
         
         # Training
-        # CHANGE: 'nb_epoch' is deprecated. Use 'epochs'.
         hist = model.fit([np.array(user_input), np.array(item_input)], #input
                          np.array(labels), # labels 
                          batch_size=batch_size, epochs=1, verbose=0, shuffle=True)
@@ -296,8 +288,114 @@ if __name__ == '__main__':
             if hr > best_hr:
                 best_hr, best_ndcg, best_iter = hr, ndcg, epoch
                 if args.out > 0:
-                    model.save(model_out_file, overwrite=True)
+                    # --- THE ONLY SAVE COMMAND ---
+                    # This saves the weights of the BEST performing model as a .npy file
+                    np.save(model_out_file, model.get_weights())
 
     print("End. Best Iteration %d:  HR = %.4f, NDCG = %.4f. " %(best_iter, best_hr, best_ndcg))
     if args.out > 0:
-        print("The best NeuMF model is saved to %s" %(model_out_file))
+        print("The best NeuMF model weights are saved to %s" %(model_out_file))
+
+# if __name__ == '__main__':
+#     args = parse_args()
+#     epochs = args.epochs
+#     batch_size = args.batch_size
+#     mf_dim = args.num_factors
+#     layers = eval(args.layers)
+#     reg_mf = args.reg_mf
+#     reg_layers = eval(args.reg_layers)
+#     num_negatives = args.num_neg
+#     learning_rate = args.lr
+#     learner = args.learner
+#     verbose = args.verbose
+#     mf_pretrain = args.mf_pretrain
+#     mlp_pretrain = args.mlp_pretrain
+#     topK = args.topK
+#     # topK = 10
+#     evaluation_threads = 1
+#     print("NeuMF arguments: %s " %(args))
+#     model_out_file = 'Pretrain/%s_NeuMF_%d_%s_%d.npy' %(args.dataset, mf_dim, args.layers, time())
+
+#     # Loading data
+#     t1 = time()
+#     dataset = Dataset(args.path + args.dataset)
+#     train, testRatings, testNegatives = dataset.trainMatrix, dataset.testRatings, dataset.testNegatives
+#     num_users, num_items = train.shape
+#     print("Load data done [%.1f s]. #user=%d, #item=%d, #train=%d, #test=%d" 
+#           %(time()-t1, num_users, num_items, train.nnz, len(testRatings)))
+    
+#     # Build model
+#     model = get_model(num_users, num_items, mf_dim, layers, reg_layers, reg_mf)
+#     #model.summary()
+#     if learner.lower() == "adagrad": 
+#         model.compile(optimizer=Adagrad(lr=learning_rate), loss='binary_crossentropy')
+#     elif learner.lower() == "rmsprop":
+#         model.compile(optimizer=RMSprop(lr=learning_rate), loss='binary_crossentropy')
+#     elif learner.lower() == "adam":
+#         model.compile(optimizer=Adam(lr=learning_rate), loss='binary_crossentropy')
+#     else:
+#         model.compile(optimizer=SGD(lr=learning_rate), loss='binary_crossentropy')
+    
+#     # Load pretrain model
+#     # if mf_pretrain != '' and mlp_pretrain != '':
+#     #     # CHANGE: Load the entire saved model instead of just weights. This is more robust.
+#     #     gmf_model = load_model(mf_pretrain)
+#     #     mlp_model = load_model(mlp_pretrain)
+#     #     model = load_pretrain_model(model, gmf_model, mlp_model, len(layers))
+#     #     print("Load pretrained GMF (%s) and MLP (%s) models done." %(mf_pretrain, mlp_pretrain))
+#     # NEW (CORRECTED) CODE
+# # FINAL CORRECTED CODE for NeuMF.py pre-training block
+
+#     # FINAL, CORRECTED PRE-TRAINING BLOCK FOR NeuMF.py
+
+#     # FINAL, CORRECTED PRE-TRAINING BLOCK FOR NeuMF.py
+
+# # Load pretrain model
+#     if mf_pretrain != '' and mlp_pretrain != '':
+#         # Load the weights from the .npy files
+#         gmf_weights = np.load(mf_pretrain, allow_pickle=True)
+#         mlp_weights = np.load(mlp_pretrain, allow_pickle=True)
+    
+#         # Pass the NumPy weight arrays directly to the loading function
+#         model = load_pretrain_model(model, gmf_weights, mlp_weights, len(layers))
+#         print("Load pretrained GMF (%s) and MLP (%s) models done." %(mf_pretrain, mlp_pretrain))
+        
+#     # Init performance
+#     (hits, ndcgs) = evaluate_model(model, testRatings, testNegatives, topK, evaluation_threads)
+#     hr, ndcg = np.array(hits).mean(), np.array(ndcgs).mean()
+#     print('Init: HR = %.4f, NDCG = %.4f' % (hr, ndcg))
+#     best_hr, best_ndcg, best_iter = hr, ndcg, -1
+#     if args.out > 0:
+#         # CHANGE: save the whole model instead of just weights
+#         model.save(model_out_file)
+        
+#     # Training model
+#     for epoch in range(epochs):
+#         t1 = time()
+#         # Generate training instances
+#         user_input, item_input, labels = get_train_instances(train, num_negatives, num_items)
+        
+#         # Training
+#         # CHANGE: 'nb_epoch' is deprecated. Use 'epochs'.
+#         hist = model.fit([np.array(user_input), np.array(item_input)], #input
+#                          np.array(labels), # labels 
+#                          batch_size=batch_size, epochs=1, verbose=0, shuffle=True)
+#         t2 = time()
+        
+#         # Evaluation
+#         if epoch % verbose == 0:
+#             (hits, ndcgs) = evaluate_model(model, testRatings, testNegatives, topK, evaluation_threads)
+#             hr, ndcg, loss = np.array(hits).mean(), np.array(ndcgs).mean(), hist.history['loss'][0]
+#             print('Iteration %d [%.1f s]: HR = %.4f, NDCG = %.4f, loss = %.4f [%.1f s]' 
+#                   % (epoch,  t2-t1, hr, ndcg, loss, time()-t2))
+#             if hr > best_hr:
+#                 best_hr, best_ndcg, best_iter = hr, ndcg, epoch
+#                 if args.out > 0:
+#                     # Corrected line
+#                     np.save(model_out_file, model.get_weights())
+#                     #model.save_weights(model_out_file, overwrite=True) 
+#                     #model.save(model_out_file, overwrite=True)
+
+#     print("End. Best Iteration %d:  HR = %.4f, NDCG = %.4f. " %(best_iter, best_hr, best_ndcg))
+#     if args.out > 0:
+#         print("The best NeuMF model is saved to %s" %(model_out_file))
