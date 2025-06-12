@@ -35,6 +35,8 @@ def parse_args():
                         help='Choose a dataset.')
     parser.add_argument('--epochs', type=int, default=100,
                         help='Number of epochs.')
+    parser.add_argument('--topK', type=int, default=10,
+                        help='Top K.')
     parser.add_argument('--batch_size', type=int, default=256,
                         help='Batch size.')
     parser.add_argument('--num_factors', type=int, default=8,
@@ -213,8 +215,8 @@ if __name__ == '__main__':
     verbose = args.verbose
     mf_pretrain = args.mf_pretrain
     mlp_pretrain = args.mlp_pretrain
-            
-    topK = 10
+    topK = args.topK
+    # topK = 10
     evaluation_threads = 1
     print("NeuMF arguments: %s " %(args))
     model_out_file = 'Pretrain/%s_NeuMF_%d_%s_%d.h5' %(args.dataset, mf_dim, args.layers, time())
