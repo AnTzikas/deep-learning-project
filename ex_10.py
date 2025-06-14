@@ -64,6 +64,6 @@ if __name__ == '__main__':
     print(f"Dataset loaded successfully: {num_users} users, {num_items} items.")
     
     # --- 2. Define the range and run the calculation ---
-    latent_factors_range = range(1, 31, 5)  # 1, 6, 11, 16, 21, 26
+    latent_factors_range = [1, 5, 10, 15, 20, 25, 30]  # 1, 6, 11, 16, 21, 26
     
     calculate_and_display_params(num_users, num_items, latent_factors_range)

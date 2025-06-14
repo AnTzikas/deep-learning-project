@@ -1,32 +1,41 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load your CSV file
-df = pd.read_csv("NeuMF_summary.csv")  # replace with your actual filename
-df = df[df['epoch'] <= 10]  # Keep K = 1 to 10 (epoch 1-10)
+# Load the summary data
+neumf = pd.read_csv("topK_summary.csv")
 
-# Create figure with two subplots
-fig, axs = plt.subplots(1, 2, figsize=(12, 5))
-fig.suptitle("Performance of NeuMF with Respect to K (Top-K Recommendation)", fontsize=14)
 
-# Plot HR@K
-axs[0].errorbar(df['epoch'], df['HR_mean'], yerr=df['HR_std'], fmt='-o', color='crimson', label='HR@K')
-axs[0].set_title('(a) HR@K')
-axs[0].set_xlabel('K')
-axs[0].set_ylabel('HR@K')
-axs[0].set_xticks(df['epoch'])
-axs[0].grid(True)
-axs[0].legend()
+# Plot
+plt.figure(figsize=(4, 3))
+plt.errorbar(neumf["K"], neumf["HR_mean"], yerr=neumf["HR_std"], linestyle='--', color='blue', label='NeuMF', capsize=2)
 
-# Plot NDCG@K
-axs[1].errorbar(df['epoch'], df['NDCG_mean'], yerr=df['NDCG_std'], fmt='-o', color='navy', label='NDCG@K')
-axs[1].set_title('(b) NDCG@K')
-axs[1].set_xlabel('K')
-axs[1].set_ylabel('NDCG@K')
-axs[1].set_xticks(df['epoch'])
-axs[1].grid(True)
-axs[1].legend()
+plt.xlabel("TopK", fontsize=10, weight='bold')
+plt.ylabel("HR@K", fontsize=10, weight='bold')
+plt.xticks(fontsize=9)
+plt.yticks(fontsize=9)
+plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
 
-plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-plt.savefig("figure_5_topk_metrics.png")
+plt.title("MovieLens-100K", fontsize=11, weight='bold')
+plt.legend(loc='lower right', frameon=True, fontsize=8, edgecolor='black')
+
+plt.tight_layout()
+plt.savefig("TopK_HR.png", dpi=300)
+plt.show()
+
+
+
+plt.figure(figsize=(4, 3))
+plt.errorbar(neumf["K"], neumf["NDCG_mean"], yerr=neumf["NDCG_std"], linestyle='--', color='red', label='NeuMF', capsize=2)
+
+plt.xlabel("TopK", fontsize=10, weight='bold')
+plt.ylabel("NDCG@K", fontsize=10, weight='bold')
+plt.xticks(fontsize=9)
+plt.yticks(fontsize=9)
+plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+
+plt.title("MovieLens-100K", fontsize=11, weight='bold')
+plt.legend(loc='lower right', frameon=True, fontsize=8, edgecolor='black')
+
+plt.tight_layout()
+plt.savefig("TopK_NDCG.png", dpi=300)
 plt.show()

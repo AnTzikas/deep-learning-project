@@ -1,4 +1,4 @@
-# calculate_neumf_params.py
+# calculate_best_neumf_params.py (Corrected)
 import argparse
 from NeuMF import get_model # We import the model-building function from our NeuMF.py
 from Dataset import Dataset
@@ -9,13 +9,15 @@ def parse_args():
                         help='Input data path.')
     parser.add_argument('--dataset', nargs='?', default='ml-100k',
                         help='Choose a dataset.')
-    parser.add_argument('--num_factors', type=int, default=64,
+    # --- CORRECTED PARAMETERS ---
+    parser.add_argument('--num_factors', type=int, default=8,
                         help='Embedding size of GMF model.')
-    parser.add_argument('--layers', nargs='?', default='[64,32,16,8]',
+    parser.add_argument('--layers', nargs='?', default='[64,32,16]',
                         help="MLP layers.")
+    # --- END CORRECTIONS ---
     parser.add_argument('--reg_mf', type=float, default=0,
                         help='Regularization for MF embeddings.')
-    parser.add_argument('--reg_layers', nargs='?', default='[0,0,0,0]',
+    parser.add_argument('--reg_layers', nargs='?', default='[0,0,0]',
                         help="Regularization for each MLP layer.")
     return parser.parse_args()
 
@@ -31,9 +33,9 @@ if __name__ == '__main__':
     
     total_params = model.count_params()
     
-    print("\n--- NeuMF Parameter Calculation ---")
-    print(f"For the best parameter setting:")
-    print(f"  - Predictive Factors (GMF): {args.num_factors}")
+    print("\n--- NeuMF Parameter Calculation (For Our Best Model) ---")
+    print(f"For the best parameter setting found in our experiments:")
+    print(f"  - GMF Factors: {args.num_factors}")
     print(f"  - MLP Layers: {args.layers}")
     print(f"Based on {num_users} users and {num_items} items.")
     print(f"\nTotal number of trainable parameters: {total_params:,}")

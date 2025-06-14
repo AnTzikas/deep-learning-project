@@ -69,7 +69,7 @@ if __name__ == '__main__':
     train_matrix = csr_matrix(train)
 
     # --- 3. Experiment Loop ---
-    latent_factors_range = range(1, 31, 5) # 1, 6, 11, 16, 21, 26
+    latent_factors_range = [1, 5, 10, 15, 20, 25, 30]
     topK = 10
     evaluation_threads = 1 # Set to 1 for simplicity, can be increased
     
@@ -79,38 +79,37 @@ if __name__ == '__main__':
 
     print("\nStarting NMF evaluation for different numbers of latent factors...")
     for n_factors in tqdm(latent_factors_range, desc="Evaluating NMF"):
-        # --- 3a. Train the NMF Model ---
-        t_start_train = time()
-        # Initialize the NMF model
-        # 'l1_ratio=0' makes it a pure Frobenius norm regularization (L2)
-        model = NMF(n_components=n_factors, init='random', random_state=0, max_iter=200, solver='cd', l1_ratio=0.0)
-        
-        # Fit the model to get user (W) and item (H) factors
-        W = model.fit_transform(train_matrix)
-        H = model.components_
-        t_end_train = time()
-        
-        # --- 3b. Create Wrapper and Evaluate ---
-        nmf_wrapper = NMFWrapper(W, H)
-        t_start_eval = time()
-        (hits, ndcgs) = evaluate_model(nmf_wrapper, testRatings, testNegatives, topK, evaluation_threads)
-        hr, ndcg = np.array(hits).mean(), np.array(ndcgs).mean()
-        t_end_eval = time()
-        
-        results.append({'factors': n_factors, 'HR@10': hr, 'NDCG@10': ndcg})
+        hr_list = []
+        ndcg_list = []
+        runs_per_factor = 10
+        for run in range(runs_per_factor):
+            model = NMF(n_components=n_factors, init='random', random_state=run, max_iter=200, solver='cd', l1_ratio=0.0)
+            W = model.fit_transform(train_matrix)
+            H = model.components_
+            nmf_wrapper = NMFWrapper(W, H)
+            hits, ndcgs = evaluate_model(nmf_wrapper, testRatings, testNegatives, topK, evaluation_threads)
+            hr_list.append(np.mean(hits))
+            ndcg_list.append(np.mean(ndcgs))
 
-        print(f"Factors: {n_factors:2d}, HR@10: {hr:.4f}, NDCG@10: {ndcg:.4f}, "
-              f"Train Time: {t_end_train - t_start_train:.1f}s, Eval Time: {t_end_eval - t_start_eval:.1f}s")
-        
-        if ndcg > best_ndcg:
-            best_ndcg = ndcg
-            best_factors = n_factors
+        hr_mean = np.mean(hr_list)
+        hr_std = np.std(hr_list)
+        ndcg_mean = np.mean(ndcg_list)
+        ndcg_std = np.std(ndcg_list)
+
+        results.append({
+            'factors': n_factors,
+            'HR@10_mean': hr_mean,
+            'HR@10_std': hr_std,
+            'NDCG@10_mean': ndcg_mean,
+            'NDCG@10_std': ndcg_std
+        })
+
+        print(f"Factors: {n_factors:2d} | HR@10: {hr_mean:.4f} ± {hr_std:.4f} | NDCG@10: {ndcg_mean:.4f} ± {ndcg_std:.4f}")
+
+
     
-    print("\n--- Evaluation Complete ---")
-    print("Results Summary:")
-    results_df = pd.DataFrame(results)
-    print(results_df)
-    results_df.to_csv("nmf_results.csv", index=False)
-
-    print(f"\nBest Parameter Setting:")
-    print(f"The best performance was achieved with {best_factors} latent factors, resulting in an NDCG@10 of {best_ndcg:.4f}.")
+    df = pd.DataFrame(results)
+    df.to_csv("exercise_9/nmf_results_averaged.csv", index=False)
+    print("\n\n")
+    print(df)
+    print("\nSaved: nmf_results_averaged.csv")

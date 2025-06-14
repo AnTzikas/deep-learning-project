@@ -244,6 +244,7 @@ if __name__ == '__main__':
     
     # Build model
     model = get_model(num_users, num_items, mf_dim, layers, reg_layers, reg_mf)
+    #model.summary()
     if learner.lower() == "adagrad": 
         model.compile(optimizer=Adagrad(lr=learning_rate), loss='binary_crossentropy')
     elif learner.lower() == "rmsprop":

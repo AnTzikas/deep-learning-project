@@ -1,0 +1,2 @@
+Configuration,HR@10,NDCG@10
+4 Layers | No Pretrain,0.6668 ± 0.0098,0.3862 ± 0.0057

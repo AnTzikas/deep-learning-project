@@ -42,11 +42,11 @@ def main():
     NUM_RUNS = 10
     EPOCHS = 50
     DATASET = "ml-100k"
-    LAYERS = "[64,32,16]"
-    REG_LAYERS = "[0,0,0]"
+    LAYERS = "[32,16]"
+    REG_LAYERS = "[0,0]"
     # LAYERS = "[16]"
     # REG_LAYERS = "[0]"
-    NUM_FACTORS = "8"
+    NUM_FACTORS = "16"
     all_dfs = []
     
     
