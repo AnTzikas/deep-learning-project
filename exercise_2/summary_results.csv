@@ -1,7 +1,0 @@
-Configuration,HR@10,NDCG@10
-1 Layer | No Pretrain,0.6735 ± 0.0080,0.3925 ± 0.0079
-1 Layer | With Pretrain,0.6720 ± 0.0104,0.3923 ± 0.0048
-2 Layers | No Pretrain,0.6743 ± 0.0084,0.3857 ± 0.0052
-2 Layers | With Pretrain,0.6717 ± 0.0085,0.3898 ± 0.0034
-3 Layers | No Pretrain,0.6657 ± 0.0076,0.3859 ± 0.0051
-3 Layers | With Pretrain,0.6665 ± 0.0022,0.3878 ± 0.0008
