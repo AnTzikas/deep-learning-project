@@ -1,0 +1,200 @@
+Run 1
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [23.2s]: loss = 0.3858, HR = 0.5429, NDCG = 0.3138 [eval 1.8s]
+Epoch 2 [23.0s]: loss = 0.2759, HR = 0.6182, NDCG = 0.3566 [eval 1.7s]
+Epoch 3 [22.6s]: loss = 0.2531, HR = 0.6501, NDCG = 0.3737 [eval 1.7s]
+Epoch 4 [24.5s]: loss = 0.2432, HR = 0.6511, NDCG = 0.3841 [eval 1.7s]
+Epoch 5 [23.5s]: loss = 0.2375, HR = 0.6776, NDCG = 0.3938 [eval 1.8s]
+Epoch 6 [23.1s]: loss = 0.2342, HR = 0.6723, NDCG = 0.3922 [eval 1.8s]
+Epoch 7 [24.1s]: loss = 0.2318, HR = 0.6808, NDCG = 0.3982 [eval 1.9s]
+Epoch 8 [23.5s]: loss = 0.2297, HR = 0.6797, NDCG = 0.4007 [eval 1.8s]
+Epoch 9 [23.8s]: loss = 0.2274, HR = 0.6808, NDCG = 0.3945 [eval 1.8s]
+Epoch 10 [23.2s]: loss = 0.2263, HR = 0.6670, NDCG = 0.3952 [eval 1.8s]
+Epoch 11 [24.1s]: loss = 0.2248, HR = 0.6787, NDCG = 0.3965 [eval 1.6s]
+
+End. Best Epoch 7: HR = 0.6808, NDCG = 0.3982.
+Run 2
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [21.6s]: loss = 0.3854, HR = 0.5504, NDCG = 0.3054 [eval 1.7s]
+Epoch 2 [23.9s]: loss = 0.2787, HR = 0.6151, NDCG = 0.3451 [eval 1.8s]
+Epoch 3 [23.9s]: loss = 0.2565, HR = 0.6448, NDCG = 0.3623 [eval 1.8s]
+Epoch 4 [24.1s]: loss = 0.2466, HR = 0.6617, NDCG = 0.3741 [eval 1.8s]
+Epoch 5 [23.7s]: loss = 0.2412, HR = 0.6522, NDCG = 0.3777 [eval 1.8s]
+Epoch 6 [23.8s]: loss = 0.2367, HR = 0.6660, NDCG = 0.3862 [eval 1.7s]
+Epoch 7 [23.0s]: loss = 0.2329, HR = 0.6649, NDCG = 0.3879 [eval 1.8s]
+Epoch 8 [23.4s]: loss = 0.2303, HR = 0.6691, NDCG = 0.3875 [eval 1.9s]
+Epoch 9 [23.3s]: loss = 0.2291, HR = 0.6734, NDCG = 0.3858 [eval 1.7s]
+Epoch 10 [23.3s]: loss = 0.2277, HR = 0.6681, NDCG = 0.3873 [eval 1.9s]
+Epoch 11 [24.5s]: loss = 0.2267, HR = 0.6808, NDCG = 0.3922 [eval 1.9s]
+
+End. Best Epoch 11: HR = 0.6808, NDCG = 0.3922.
+Run 3
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [24.4s]: loss = 0.3857, HR = 0.5419, NDCG = 0.3104 [eval 1.8s]
+Epoch 2 [23.8s]: loss = 0.2787, HR = 0.5970, NDCG = 0.3417 [eval 1.8s]
+Epoch 3 [24.1s]: loss = 0.2564, HR = 0.6331, NDCG = 0.3628 [eval 1.8s]
+Epoch 4 [25.1s]: loss = 0.2450, HR = 0.6543, NDCG = 0.3776 [eval 2.0s]
+Epoch 5 [24.2s]: loss = 0.2393, HR = 0.6670, NDCG = 0.3853 [eval 1.8s]
+Epoch 6 [24.0s]: loss = 0.2353, HR = 0.6713, NDCG = 0.3872 [eval 1.8s]
+Epoch 7 [25.1s]: loss = 0.2320, HR = 0.6829, NDCG = 0.3949 [eval 2.0s]
+Epoch 8 [24.1s]: loss = 0.2298, HR = 0.6808, NDCG = 0.3961 [eval 1.8s]
+Epoch 9 [22.9s]: loss = 0.2281, HR = 0.6776, NDCG = 0.3982 [eval 1.8s]
+Epoch 10 [23.1s]: loss = 0.2263, HR = 0.6755, NDCG = 0.3935 [eval 1.8s]
+Epoch 11 [23.6s]: loss = 0.2253, HR = 0.6744, NDCG = 0.3933 [eval 1.7s]
+
+End. Best Epoch 7: HR = 0.6829, NDCG = 0.3949.
+Run 4
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [23.3s]: loss = 0.3843, HR = 0.5483, NDCG = 0.3116 [eval 1.8s]
+Epoch 2 [23.3s]: loss = 0.2771, HR = 0.6119, NDCG = 0.3486 [eval 1.7s]
+Epoch 3 [24.4s]: loss = 0.2573, HR = 0.6628, NDCG = 0.3733 [eval 1.9s]
+Epoch 4 [23.2s]: loss = 0.2468, HR = 0.6617, NDCG = 0.3760 [eval 1.8s]
+Epoch 5 [23.8s]: loss = 0.2409, HR = 0.6776, NDCG = 0.3823 [eval 1.9s]
+Epoch 6 [23.0s]: loss = 0.2367, HR = 0.6797, NDCG = 0.3928 [eval 1.7s]
+Epoch 7 [23.8s]: loss = 0.2327, HR = 0.6872, NDCG = 0.3964 [eval 1.8s]
+Epoch 8 [23.2s]: loss = 0.2307, HR = 0.6734, NDCG = 0.3929 [eval 1.7s]
+Epoch 9 [23.7s]: loss = 0.2285, HR = 0.6840, NDCG = 0.3964 [eval 1.7s]
+Epoch 10 [23.1s]: loss = 0.2268, HR = 0.6840, NDCG = 0.3951 [eval 1.7s]
+Epoch 11 [24.1s]: loss = 0.2261, HR = 0.6766, NDCG = 0.3967 [eval 2.1s]
+
+End. Best Epoch 7: HR = 0.6872, NDCG = 0.3964.
+Run 5
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [24.5s]: loss = 0.3850, HR = 0.5483, NDCG = 0.3097 [eval 1.8s]
+Epoch 2 [23.0s]: loss = 0.2769, HR = 0.6076, NDCG = 0.3468 [eval 1.7s]
+Epoch 3 [23.4s]: loss = 0.2570, HR = 0.6426, NDCG = 0.3658 [eval 1.8s]
+Epoch 4 [23.7s]: loss = 0.2467, HR = 0.6575, NDCG = 0.3847 [eval 1.7s]
+Epoch 5 [23.4s]: loss = 0.2401, HR = 0.6766, NDCG = 0.3858 [eval 1.7s]
+Epoch 6 [23.6s]: loss = 0.2361, HR = 0.6755, NDCG = 0.3956 [eval 1.8s]
+Epoch 7 [23.0s]: loss = 0.2331, HR = 0.6819, NDCG = 0.3965 [eval 1.9s]
+Epoch 8 [22.9s]: loss = 0.2302, HR = 0.6819, NDCG = 0.3986 [eval 1.7s]
+Epoch 9 [23.3s]: loss = 0.2292, HR = 0.6638, NDCG = 0.3917 [eval 1.7s]
+Epoch 10 [24.1s]: loss = 0.2268, HR = 0.6744, NDCG = 0.3928 [eval 1.8s]
+Epoch 11 [23.6s]: loss = 0.2254, HR = 0.6670, NDCG = 0.3938 [eval 1.7s]
+
+End. Best Epoch 7: HR = 0.6819, NDCG = 0.3965.
+Run 6
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [23.4s]: loss = 0.3874, HR = 0.5366, NDCG = 0.3051 [eval 1.8s]
+Epoch 2 [24.0s]: loss = 0.2804, HR = 0.6045, NDCG = 0.3442 [eval 1.8s]
+Epoch 3 [23.4s]: loss = 0.2570, HR = 0.6405, NDCG = 0.3683 [eval 1.7s]
+Epoch 4 [23.1s]: loss = 0.2466, HR = 0.6585, NDCG = 0.3784 [eval 1.8s]
+Epoch 5 [23.3s]: loss = 0.2398, HR = 0.6649, NDCG = 0.3870 [eval 1.7s]
+Epoch 6 [23.3s]: loss = 0.2359, HR = 0.6670, NDCG = 0.3862 [eval 1.9s]
+Epoch 7 [23.6s]: loss = 0.2326, HR = 0.6691, NDCG = 0.3884 [eval 1.9s]
+Epoch 8 [23.4s]: loss = 0.2303, HR = 0.6638, NDCG = 0.3910 [eval 1.8s]
+Epoch 9 [23.2s]: loss = 0.2292, HR = 0.6713, NDCG = 0.3924 [eval 1.7s]
+Epoch 10 [23.0s]: loss = 0.2270, HR = 0.6766, NDCG = 0.3940 [eval 1.7s]
+Epoch 11 [22.8s]: loss = 0.2266, HR = 0.6691, NDCG = 0.3944 [eval 1.7s]
+
+End. Best Epoch 10: HR = 0.6766, NDCG = 0.3940.
+Run 7
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [23.5s]: loss = 0.3871, HR = 0.5355, NDCG = 0.3074 [eval 1.8s]
+Epoch 2 [23.0s]: loss = 0.2823, HR = 0.6013, NDCG = 0.3407 [eval 1.7s]
+Epoch 3 [23.1s]: loss = 0.2575, HR = 0.6458, NDCG = 0.3663 [eval 1.8s]
+Epoch 4 [23.0s]: loss = 0.2460, HR = 0.6522, NDCG = 0.3742 [eval 1.7s]
+Epoch 5 [23.0s]: loss = 0.2394, HR = 0.6691, NDCG = 0.3901 [eval 1.8s]
+Epoch 6 [22.8s]: loss = 0.2350, HR = 0.6702, NDCG = 0.3888 [eval 1.7s]
+Epoch 7 [23.2s]: loss = 0.2319, HR = 0.6787, NDCG = 0.3963 [eval 1.7s]
+Epoch 8 [22.9s]: loss = 0.2297, HR = 0.6797, NDCG = 0.3922 [eval 1.8s]
+Epoch 9 [22.8s]: loss = 0.2284, HR = 0.6723, NDCG = 0.3943 [eval 1.7s]
+Epoch 10 [23.0s]: loss = 0.2270, HR = 0.6829, NDCG = 0.3998 [eval 1.7s]
+Epoch 11 [22.9s]: loss = 0.2258, HR = 0.6840, NDCG = 0.3959 [eval 1.7s]
+
+End. Best Epoch 11: HR = 0.6840, NDCG = 0.3959.
+Run 8
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [23.1s]: loss = 0.3873, HR = 0.5270, NDCG = 0.2972 [eval 1.7s]
+Epoch 2 [23.0s]: loss = 0.2828, HR = 0.5896, NDCG = 0.3370 [eval 1.7s]
+Epoch 3 [23.8s]: loss = 0.2602, HR = 0.6310, NDCG = 0.3591 [eval 1.8s]
+Epoch 4 [23.3s]: loss = 0.2468, HR = 0.6691, NDCG = 0.3802 [eval 1.9s]
+Epoch 5 [23.1s]: loss = 0.2398, HR = 0.6554, NDCG = 0.3782 [eval 1.7s]
+Epoch 6 [23.3s]: loss = 0.2353, HR = 0.6681, NDCG = 0.3865 [eval 1.8s]
+Epoch 7 [23.6s]: loss = 0.2319, HR = 0.6734, NDCG = 0.3908 [eval 1.7s]
+Epoch 8 [23.6s]: loss = 0.2299, HR = 0.6723, NDCG = 0.3956 [eval 1.7s]
+Epoch 9 [24.5s]: loss = 0.2274, HR = 0.6734, NDCG = 0.3990 [eval 1.8s]
+Epoch 10 [24.2s]: loss = 0.2269, HR = 0.6723, NDCG = 0.3984 [eval 1.8s]
+Epoch 11 [23.5s]: loss = 0.2261, HR = 0.6787, NDCG = 0.3948 [eval 1.7s]
+
+End. Best Epoch 11: HR = 0.6787, NDCG = 0.3948.
+Run 9
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [22.7s]: loss = 0.3872, HR = 0.5387, NDCG = 0.3082 [eval 1.7s]
+Epoch 2 [23.1s]: loss = 0.2756, HR = 0.6151, NDCG = 0.3502 [eval 1.8s]
+Epoch 3 [23.1s]: loss = 0.2542, HR = 0.6511, NDCG = 0.3632 [eval 1.7s]
+Epoch 4 [22.9s]: loss = 0.2453, HR = 0.6649, NDCG = 0.3716 [eval 1.9s]
+Epoch 5 [23.5s]: loss = 0.2399, HR = 0.6596, NDCG = 0.3794 [eval 1.7s]
+Epoch 6 [22.9s]: loss = 0.2360, HR = 0.6702, NDCG = 0.3859 [eval 1.7s]
+Epoch 7 [25.3s]: loss = 0.2325, HR = 0.6808, NDCG = 0.3901 [eval 1.8s]
+Epoch 8 [23.5s]: loss = 0.2306, HR = 0.6893, NDCG = 0.3918 [eval 1.8s]
+Epoch 9 [23.0s]: loss = 0.2284, HR = 0.6797, NDCG = 0.3922 [eval 1.7s]
+Epoch 10 [23.5s]: loss = 0.2274, HR = 0.6797, NDCG = 0.3919 [eval 1.8s]
+Epoch 11 [23.6s]: loss = 0.2263, HR = 0.6776, NDCG = 0.3914 [eval 1.8s]
+
+End. Best Epoch 8: HR = 0.6893, NDCG = 0.3918.
+Run 10
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: response
+
+--- Model Complexity ---
+Teacher Model Parameters: 84,561
+Student Model Parameters: 63,033
+Epoch 1 [24.6s]: loss = 0.3856, HR = 0.5366, NDCG = 0.3014 [eval 1.9s]
+Epoch 2 [24.3s]: loss = 0.2802, HR = 0.6098, NDCG = 0.3433 [eval 1.8s]
+Epoch 3 [23.7s]: loss = 0.2559, HR = 0.6458, NDCG = 0.3683 [eval 1.8s]
+Epoch 4 [23.9s]: loss = 0.2441, HR = 0.6670, NDCG = 0.3819 [eval 1.8s]
+Epoch 5 [23.1s]: loss = 0.2379, HR = 0.6660, NDCG = 0.3861 [eval 1.7s]
+Epoch 6 [22.7s]: loss = 0.2339, HR = 0.6670, NDCG = 0.3861 [eval 1.8s]
+Epoch 7 [24.5s]: loss = 0.2313, HR = 0.6702, NDCG = 0.3897 [eval 1.8s]
+Epoch 8 [24.7s]: loss = 0.2291, HR = 0.6575, NDCG = 0.3833 [eval 1.7s]
+Epoch 9 [23.8s]: loss = 0.2276, HR = 0.6734, NDCG = 0.3915 [eval 1.8s]
+Epoch 10 [23.3s]: loss = 0.2264, HR = 0.6744, NDCG = 0.3894 [eval 1.8s]
+Epoch 11 [23.1s]: loss = 0.2246, HR = 0.6713, NDCG = 0.3935 [eval 1.8s]
+
+End. Best Epoch 10: HR = 0.6744, NDCG = 0.3894.

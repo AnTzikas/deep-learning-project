@@ -1,0 +1,30 @@
+Run 1
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 2
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 3
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 4
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 5
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 6
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 7
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 8
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 9
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
+Run 10
+Building and loading teacher model from Pretrain/ml-100k_NeuMF_16_[32,16]_1749918643.npy
+Using distillation technique: feature
